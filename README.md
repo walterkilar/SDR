@@ -8,8 +8,8 @@ Note that the the cosine and sine portions of the signal are out of phase from o
 Sequence of events:
 
 1. A splitter separates odd and even bits
-2. Each bit is over-sampled at T_sym = 2 T_b
-3. Even and odd bits are independently sent through rectangular pulse shaping filter . I(t) is multiplied by cos (2 pi f_c t) and Q(t) is multiplied by sin (2 pi f_c t).
+2. Each bit is over-sampled at (img/img5-qpsk-equation2.png)
+3. Even and odd bits are independently sent through rectangular pulse shaping filter . I(t) is multiplied by (img/img6-qpsk-equation3.png) and Q(t) is multiplied by (img/img7-qpsk-equation4.png).
 4. I(t) and Q(t) and  are summed to create s(t).
 
 In MatLab this is represented as follows:
