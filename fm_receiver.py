@@ -3,10 +3,11 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: FM Rx
-# Author: Walt Kilar via John Malsbury - Ettus Research
-# Description: HackRF One FM Receiver
-# Generated: Thu Feb 28 04:46:43 2019
+# Author: Walt Kilar
+# Description: FM Receiver
+# Generated: Sun Mar 17 07:07:52 2019
 ##################################################
+
 
 if __name__ == '__main__':
     import ctypes
@@ -29,6 +30,7 @@ from gnuradio.fft import window
 from gnuradio.filter import firdes
 from gnuradio.wxgui import fftsink2
 from gnuradio.wxgui import forms
+from gnuradio.wxgui import waterfallsink2
 from grc_gnuradio import wxgui as grc_wxgui
 from optparse import OptionParser
 import osmosdr
@@ -40,13 +42,13 @@ class fm_receiver(grc_wxgui.top_block_gui):
 
     def __init__(self):
         grc_wxgui.top_block_gui.__init__(self, title="FM Rx")
-        _icon_path = "C:\Program Files\GNURadio-3.7\share\icons\hicolor\scalable/apps\gnuradio-grc.png"
+        _icon_path = "/usr/share/icons/hicolor/32x32/apps/gnuradio-grc.png"
         self.SetIcon(wx.Icon(_icon_path, wx.BITMAP_TYPE_ANY))
 
         ##################################################
         # Variables
         ##################################################
-        self.ch_freq = ch_freq = 97.9e6
+        self.ch_freq = ch_freq = 97.3e6
         self.samp_rate = samp_rate = 5e6
         self.rx_gain = rx_gain = 15
         self.lpf_decim = lpf_decim = 20
@@ -68,6 +70,20 @@ class fm_receiver(grc_wxgui.top_block_gui):
         	converter=forms.float_converter(),
         )
         self.Add(self._freq_text_box)
+        self.wxgui_waterfallsink2_0 = waterfallsink2.waterfall_sink_f(
+        	self.GetWin(),
+        	baseband_freq=0,
+        	dynamic_range=100,
+        	ref_level=0,
+        	ref_scale=2.0,
+        	sample_rate=samp_rate,
+        	fft_size=512,
+        	fft_rate=15,
+        	average=False,
+        	avg_alpha=None,
+        	title='Waterfall Plot',
+        )
+        self.Add(self.wxgui_waterfallsink2_0.win)
         self.wxgui_fftsink2_1 = fftsink2.fft_sink_f(
         	self.notebook_0.GetPage(1).GetWin(),
         	baseband_freq=0,
@@ -161,6 +177,7 @@ class fm_receiver(grc_wxgui.top_block_gui):
         self.connect((self.osmosdr_source_0, 0), (self.wxgui_fftsink2_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.audio_sink_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.wxgui_fftsink2_1, 0))
+        self.connect((self.rational_resampler_xxx_0, 0), (self.wxgui_waterfallsink2_0, 0))
 
     def get_ch_freq(self):
         return self.ch_freq
@@ -175,6 +192,7 @@ class fm_receiver(grc_wxgui.top_block_gui):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
+        self.wxgui_waterfallsink2_0.set_sample_rate(self.samp_rate)
         self.wxgui_fftsink2_1.set_sample_rate(self.samp_rate/self.lpf_decim)
         self.wxgui_fftsink2_0.set_sample_rate(self.samp_rate)
         self.osmosdr_source_0.set_sample_rate(self.samp_rate)
