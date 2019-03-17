@@ -9,4 +9,4 @@ Software Defined Radio (SDR) projects on the Hack RF One by Great Scott Gadgets
 ![QPSK transmitter](img/img1-qpsk_tx_uhd.png)
 
 ## QPSK Transmitter (WX)
-![[QPSK transmitter](img/img3-qpsk_wx.png)
+![QPSK transmitter](img/img3-qpsk_wx.png)
