@@ -22,7 +22,7 @@
     </param>
     <param>
       <key>description</key>
-      <value>FM Receiver</value>
+      <value>FM Receiver using Osmocom in WX</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -46,7 +46,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>fm_receiver</value>
+      <value>fm_rx_osmocom_wx</value>
     </param>
     <param>
       <key>max_nouts</key>
@@ -1819,7 +1819,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(176, 12)</value>
+      <value>(192, 12)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2021,7 +2021,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(408, 340)</value>
+      <value>(424, 172)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2124,7 +2124,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1016, 260)</value>
+      <value>(1016, 132)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -2235,7 +2235,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(1016, 468)</value>
+      <value>(1016, 340)</value>
     </param>
     <param>
       <key>_rotation</key>

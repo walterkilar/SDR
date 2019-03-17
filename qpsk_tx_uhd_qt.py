@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 ##################################################
 # GNU Radio Python Flow Graph
-# Title: Qpsk Tx Uhd
-# Generated: Sat Mar 16 18:31:57 2019
+# Title: QPSK Transmitter (QT)
+# Author: Walt Kilar
+# Description: QPSK Transmitter using QT GUI
+# Generated: Sun Mar 17 09:50:41 2019
 ##################################################
 
 from distutils.version import StrictVersion
@@ -34,12 +36,12 @@ import sys
 from gnuradio import qtgui
 
 
-class qpsk_tx_uhd(gr.top_block, Qt.QWidget):
+class qpsk_tx_uhd_qt(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Qpsk Tx Uhd")
+        gr.top_block.__init__(self, "QPSK Transmitter (QT)")
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("Qpsk Tx Uhd")
+        self.setWindowTitle("QPSK Transmitter (QT)")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -57,7 +59,7 @@ class qpsk_tx_uhd(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "qpsk_tx_uhd")
+        self.settings = Qt.QSettings("GNU Radio", "qpsk_tx_uhd_qt")
         self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
 
@@ -121,6 +123,7 @@ class qpsk_tx_uhd(gr.top_block, Qt.QWidget):
           verbose=False,
           log=False,
           )
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vcc((0.5, ))
         self.analog_random_source_x_0 = blocks.vector_source_b(map(int, numpy.random.randint(0, 255, 10000000)), True)
 
@@ -130,11 +133,12 @@ class qpsk_tx_uhd(gr.top_block, Qt.QWidget):
         # Connections
         ##################################################
         self.connect((self.analog_random_source_x_0, 0), (self.digital_psk_mod_0, 0))
-        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.qtgui_const_sink_x_0, 0))
+        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_throttle_0, 0))
+        self.connect((self.blocks_throttle_0, 0), (self.qtgui_const_sink_x_0, 0))
         self.connect((self.digital_psk_mod_0, 0), (self.blocks_multiply_const_vxx_0, 0))
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "qpsk_tx_uhd")
+        self.settings = Qt.QSettings("GNU Radio", "qpsk_tx_uhd_qt")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
@@ -143,6 +147,7 @@ class qpsk_tx_uhd(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
+        self.blocks_throttle_0.set_sample_rate(self.samp_rate)
 
     def get_gain(self):
         return self.gain
@@ -157,7 +162,7 @@ class qpsk_tx_uhd(gr.top_block, Qt.QWidget):
         self.freq = freq
 
 
-def main(top_block_cls=qpsk_tx_uhd, options=None):
+def main(top_block_cls=qpsk_tx_uhd_qt, options=None):
 
     qapp = Qt.QApplication(sys.argv)
 

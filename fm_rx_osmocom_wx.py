@@ -4,8 +4,8 @@
 # GNU Radio Python Flow Graph
 # Title: FM Rx
 # Author: Walt Kilar
-# Description: FM Receiver
-# Generated: Sun Mar 17 07:07:52 2019
+# Description: FM Receiver using Osmocom in WX
+# Generated: Sun Mar 17 09:53:22 2019
 ##################################################
 
 
@@ -38,7 +38,7 @@ import time
 import wx
 
 
-class fm_receiver(grc_wxgui.top_block_gui):
+class fm_rx_osmocom_wx(grc_wxgui.top_block_gui):
 
     def __init__(self):
         grc_wxgui.top_block_gui.__init__(self, title="FM Rx")
@@ -228,7 +228,7 @@ class fm_receiver(grc_wxgui.top_block_gui):
         self.audio_samp_rate = audio_samp_rate
 
 
-def main(top_block_cls=fm_receiver, options=None):
+def main(top_block_cls=fm_rx_osmocom_wx, options=None):
 
     tb = top_block_cls()
     tb.Start(True)
