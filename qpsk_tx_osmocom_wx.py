@@ -5,7 +5,7 @@
 # Title: QPSK Transmitter
 # Author: Walt Kilar
 # Description: QPSK Transmitter using WX widget
-# Generated: Sun Mar 17 11:37:14 2019
+# Generated: Sun Mar 17 13:48:12 2019
 ##################################################
 
 
