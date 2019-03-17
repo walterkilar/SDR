@@ -13,7 +13,7 @@ Sequence of events:
 4. I(t) and Q(t) and  are summed to create s(t).
 
 In MatLab this is represented as follows:
-function [s,t,I,Q] = qpsk_mod(a,fc,OF)
+```function [s,t,I,Q] = qpsk_mod(a,fc,OF)
 %Modulate an incoming binary stream using conventional QPSK
 %a - input binary data stream (0's and 1's) to modulate
 %fc - carrier frequency in Hertz
@@ -31,7 +31,7 @@ fs = OF*fc; %sampling frequency
 t=0:1/fs:(length(I)-1)/fs; %time base
 iChannel = I.*cos(2*pi*fc*t);qChannel = -Q.*sin(2*pi*fc*t);
 s = iChannel + qChannel; %QPSK modulated baseband signal
-
+```
 Within GRC, the PSK Modulator handles the processing above. 
 
 ### QPSK Transmitter (QT)
