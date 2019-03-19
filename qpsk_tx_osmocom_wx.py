@@ -5,7 +5,7 @@
 # Title: QPSK Transmitter
 # Author: Walt Kilar
 # Description: QPSK Transmitter using WX widget
-# Generated: Sun Mar 17 13:48:12 2019
+# Generated: Mon Mar 18 20:16:51 2019
 ##################################################
 
 
@@ -45,7 +45,7 @@ class qpsk_tx_osmocom_wx(grc_wxgui.top_block_gui):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 320000
+        self.samp_rate = samp_rate = 5e6
         self.gain = gain = 30
         self.freq = freq = 2.421e9
         self.constellation_size = constellation_size = 2048

@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 ##################################################
 # GNU Radio Python Flow Graph
-# Title: QPSK Transmitter (QT)
+# Title: MPSK Transmitter
 # Author: Walt Kilar
-# Description: QPSK Transmitter using QT GUI
-# Generated: Mon Mar 18 19:55:04 2019
+# Generated: Mon Mar 18 20:18:48 2019
 ##################################################
 
 from distutils.version import StrictVersion
@@ -25,7 +24,6 @@ from PyQt5 import Qt, QtCore
 from gnuradio import blocks
 from gnuradio import digital
 from gnuradio import eng_notation
-from gnuradio import filter
 from gnuradio import gr
 from gnuradio import qtgui
 from gnuradio.eng_option import eng_option
@@ -37,12 +35,12 @@ import sys
 from gnuradio import qtgui
 
 
-class qpsk_tx_uhd_qt(gr.top_block, Qt.QWidget):
+class mpsk_tx_constellationmod_qt(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "QPSK Transmitter (QT)")
+        gr.top_block.__init__(self, "MPSK Transmitter")
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("QPSK Transmitter (QT)")
+        self.setWindowTitle("MPSK Transmitter")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -60,16 +58,18 @@ class qpsk_tx_uhd_qt(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "qpsk_tx_uhd_qt")
+        self.settings = Qt.QSettings("GNU Radio", "mpsk_tx_constellationmod_qt")
         self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
 
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 5e6
-        self.gain = gain = 30
-        self.freq = freq = 2.421e9
+        self.sps = sps = 4
+        self.samp_rate = samp_rate = 32000
+        self.qpsk_const = qpsk_const = digital.constellation_rect(([-1-1j, -1+1j, 1+1j, 1-1j]), ([0, 1, 3, 2]), 4, 2, 2, 1, 1).base()
+        self.excess_bw = excess_bw = 0.35
+        self.arity = arity = 4
 
         ##################################################
         # Blocks
@@ -79,8 +79,8 @@ class qpsk_tx_uhd_qt(gr.top_block, Qt.QWidget):
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
         	0, #fc
         	samp_rate, #bw
-        	"", #name
-        	2 #number of inputs
+        	'QT GUI Plot', #name
+        	5 #number of inputs
         )
         self.qtgui_freq_sink_x_0.set_update_time(0.10)
         self.qtgui_freq_sink_x_0.set_y_axis(-140, 10)
@@ -90,7 +90,7 @@ class qpsk_tx_uhd_qt(gr.top_block, Qt.QWidget):
         self.qtgui_freq_sink_x_0.enable_grid(False)
         self.qtgui_freq_sink_x_0.set_fft_average(1.0)
         self.qtgui_freq_sink_x_0.enable_axis_labels(True)
-        self.qtgui_freq_sink_x_0.enable_control_panel(False)
+        self.qtgui_freq_sink_x_0.enable_control_panel(True)
 
         if not True:
           self.qtgui_freq_sink_x_0.disable_legend()
@@ -106,7 +106,7 @@ class qpsk_tx_uhd_qt(gr.top_block, Qt.QWidget):
                   "magenta", "yellow", "dark red", "dark green", "dark blue"]
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
                   1.0, 1.0, 1.0, 1.0, 1.0]
-        for i in xrange(2):
+        for i in xrange(5):
             if len(labels[i]) == 0:
                 self.qtgui_freq_sink_x_0.set_line_label(i, "Data {0}".format(i))
             else:
@@ -116,11 +116,15 @@ class qpsk_tx_uhd_qt(gr.top_block, Qt.QWidget):
             self.qtgui_freq_sink_x_0.set_line_alpha(i, alphas[i])
 
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_win)
+        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_win, 1, 0, 1, 2)
+        for r in range(1, 2):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 2):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.qtgui_const_sink_x_0 = qtgui.const_sink_c(
         	1024, #size
-        	'QT GUI Plot', #name
-        	2 #number of inputs
+        	"", #name
+        	5 #number of inputs
         )
         self.qtgui_const_sink_x_0.set_update_time(0.10)
         self.qtgui_const_sink_x_0.set_y_axis(-2, 2)
@@ -145,7 +149,7 @@ class qpsk_tx_uhd_qt(gr.top_block, Qt.QWidget):
                    0, 0, 0, 0, 0]
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
                   1.0, 1.0, 1.0, 1.0, 1.0]
-        for i in xrange(2):
+        for i in xrange(5):
             if len(labels[i]) == 0:
                 self.qtgui_const_sink_x_0.set_line_label(i, "Data {0}".format(i))
             else:
@@ -158,39 +162,86 @@ class qpsk_tx_uhd_qt(gr.top_block, Qt.QWidget):
 
         self._qtgui_const_sink_x_0_win = sip.wrapinstance(self.qtgui_const_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_const_sink_x_0_win)
-        self.fir_filter_xxx_0 = filter.fir_filter_ccc(1, ())
-        self.fir_filter_xxx_0.declare_sample_delay(0)
-        self.digital_psk_mod_0 = digital.psk.psk_mod(
-          constellation_points=8,
-          mod_code="gray",
+        self.digital_constellation_modulator_0_1 = digital.generic_mod(
+          constellation=qpsk_const,
           differential=True,
-          samples_per_symbol=2,
-          excess_bw=350e-3,
+          samples_per_symbol=sps,
+          pre_diff_code=True,
+          excess_bw=0.35,
+          verbose=False,
+          log=False,
+          )
+        self.digital_constellation_modulator_0_0_0_0 = digital.generic_mod(
+          constellation=qpsk_const,
+          differential=True,
+          samples_per_symbol=sps,
+          pre_diff_code=True,
+          excess_bw=1.0,
+          verbose=False,
+          log=False,
+          )
+        self.digital_constellation_modulator_0_0_0 = digital.generic_mod(
+          constellation=qpsk_const,
+          differential=True,
+          samples_per_symbol=sps,
+          pre_diff_code=True,
+          excess_bw=0.5,
+          verbose=False,
+          log=False,
+          )
+        self.digital_constellation_modulator_0_0 = digital.generic_mod(
+          constellation=qpsk_const,
+          differential=True,
+          samples_per_symbol=sps,
+          pre_diff_code=True,
+          excess_bw=0.22,
+          verbose=False,
+          log=False,
+          )
+        self.digital_constellation_modulator_0 = digital.generic_mod(
+          constellation=qpsk_const,
+          differential=True,
+          samples_per_symbol=sps,
+          pre_diff_code=True,
+          excess_bw=0.1,
           verbose=False,
           log=False,
           )
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
-        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vcc((0.5, ))
-        self.analog_random_source_x_0 = blocks.vector_source_b(map(int, numpy.random.randint(0, 255, 10000000)), True)
+        self.analog_random_source_x_0 = blocks.vector_source_b(map(int, numpy.random.randint(0, 255, 1000)), True)
 
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_random_source_x_0, 0), (self.digital_psk_mod_0, 0))
-        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_throttle_0, 0))
-        self.connect((self.blocks_throttle_0, 0), (self.fir_filter_xxx_0, 0))
+        self.connect((self.analog_random_source_x_0, 0), (self.digital_constellation_modulator_0, 0))
+        self.connect((self.analog_random_source_x_0, 0), (self.digital_constellation_modulator_0_0, 0))
+        self.connect((self.analog_random_source_x_0, 0), (self.digital_constellation_modulator_0_0_0, 0))
+        self.connect((self.analog_random_source_x_0, 0), (self.digital_constellation_modulator_0_0_0_0, 0))
+        self.connect((self.analog_random_source_x_0, 0), (self.digital_constellation_modulator_0_1, 0))
         self.connect((self.blocks_throttle_0, 0), (self.qtgui_const_sink_x_0, 0))
         self.connect((self.blocks_throttle_0, 0), (self.qtgui_freq_sink_x_0, 0))
-        self.connect((self.digital_psk_mod_0, 0), (self.blocks_multiply_const_vxx_0, 0))
-        self.connect((self.fir_filter_xxx_0, 0), (self.qtgui_const_sink_x_0, 1))
-        self.connect((self.fir_filter_xxx_0, 0), (self.qtgui_freq_sink_x_0, 1))
+        self.connect((self.digital_constellation_modulator_0, 0), (self.blocks_throttle_0, 0))
+        self.connect((self.digital_constellation_modulator_0_0, 0), (self.qtgui_const_sink_x_0, 1))
+        self.connect((self.digital_constellation_modulator_0_0, 0), (self.qtgui_freq_sink_x_0, 1))
+        self.connect((self.digital_constellation_modulator_0_0_0, 0), (self.qtgui_const_sink_x_0, 3))
+        self.connect((self.digital_constellation_modulator_0_0_0, 0), (self.qtgui_freq_sink_x_0, 3))
+        self.connect((self.digital_constellation_modulator_0_0_0_0, 0), (self.qtgui_const_sink_x_0, 4))
+        self.connect((self.digital_constellation_modulator_0_0_0_0, 0), (self.qtgui_freq_sink_x_0, 4))
+        self.connect((self.digital_constellation_modulator_0_1, 0), (self.qtgui_const_sink_x_0, 2))
+        self.connect((self.digital_constellation_modulator_0_1, 0), (self.qtgui_freq_sink_x_0, 2))
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "qpsk_tx_uhd_qt")
+        self.settings = Qt.QSettings("GNU Radio", "mpsk_tx_constellationmod_qt")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
+
+    def get_sps(self):
+        return self.sps
+
+    def set_sps(self, sps):
+        self.sps = sps
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -200,20 +251,26 @@ class qpsk_tx_uhd_qt(gr.top_block, Qt.QWidget):
         self.qtgui_freq_sink_x_0.set_frequency_range(0, self.samp_rate)
         self.blocks_throttle_0.set_sample_rate(self.samp_rate)
 
-    def get_gain(self):
-        return self.gain
+    def get_qpsk_const(self):
+        return self.qpsk_const
 
-    def set_gain(self, gain):
-        self.gain = gain
+    def set_qpsk_const(self, qpsk_const):
+        self.qpsk_const = qpsk_const
 
-    def get_freq(self):
-        return self.freq
+    def get_excess_bw(self):
+        return self.excess_bw
 
-    def set_freq(self, freq):
-        self.freq = freq
+    def set_excess_bw(self, excess_bw):
+        self.excess_bw = excess_bw
+
+    def get_arity(self):
+        return self.arity
+
+    def set_arity(self, arity):
+        self.arity = arity
 
 
-def main(top_block_cls=qpsk_tx_uhd_qt, options=None):
+def main(top_block_cls=mpsk_tx_constellationmod_qt, options=None):
 
     qapp = Qt.QApplication(sys.argv)
 

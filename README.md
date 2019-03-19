@@ -40,5 +40,10 @@ Within GRC, the PSK Modulator handles the processing above.
 ### QPSK Transmitter (WX)
 ![QPSK transmitter](img/img3-qpsk_wx.png)
 
+### MPSK Transmitter (QT)
+![MPSK transmitter](img/img8-mpsk-flowgraph.png)
+
+![MPSK transmitter](img/img9-mpsk-gui.png)
+
 ## FM Receiver
 ![FM receiver](img/img2-fm_rx.png)
