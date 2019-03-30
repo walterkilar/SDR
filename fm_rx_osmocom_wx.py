@@ -5,7 +5,7 @@
 # Title: FM Rx
 # Author: Walt Kilar
 # Description: FM Receiver using Osmocom in WX
-# Generated: Mon Mar 18 17:20:29 2019
+# Generated: Sat Mar 30 06:44:05 2019
 ##################################################
 
 
@@ -21,6 +21,7 @@ if __name__ == '__main__':
 
 from gnuradio import analog
 from gnuradio import audio
+from gnuradio import blocks
 from gnuradio import eng_notation
 from gnuradio import filter
 from gnuradio import gr
@@ -49,11 +50,11 @@ class fm_rx_osmocom_wx(grc_wxgui.top_block_gui):
         # Variables
         ##################################################
         self.ch_freq = ch_freq = 97.3e6
-        self.samp_rate = samp_rate = 5e6
+        self.samp_rate = samp_rate = 5e6/1
         self.rx_gain = rx_gain = 15
         self.lpf_decim = lpf_decim = 20
         self.freq = freq = ch_freq
-        self.audio_samp_rate = audio_samp_rate = 96e3
+        self.audio_samp_rate = audio_samp_rate = 100e3
 
         ##################################################
         # Blocks
@@ -160,6 +161,7 @@ class fm_rx_osmocom_wx(grc_wxgui.top_block_gui):
 
         self.low_pass_filter_0 = filter.fir_filter_ccf(lpf_decim, firdes.low_pass(
         	1, samp_rate, 100e3, 10e3, firdes.WIN_HAMMING, 6.76))
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_int*1, samp_rate/1,True)
         self.audio_sink_0 = audio.sink(int(audio_samp_rate), '', True)
         self.analog_wfm_rcv_0 = analog.wfm_rcv(
         	quad_rate=250e3,
@@ -171,7 +173,8 @@ class fm_rx_osmocom_wx(grc_wxgui.top_block_gui):
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_wfm_rcv_0, 0), (self.rational_resampler_xxx_0, 0))
+        self.connect((self.analog_wfm_rcv_0, 0), (self.blocks_throttle_0, 0))
+        self.connect((self.blocks_throttle_0, 0), (self.rational_resampler_xxx_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.analog_wfm_rcv_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.low_pass_filter_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.wxgui_fftsink2_0, 0))
@@ -197,6 +200,7 @@ class fm_rx_osmocom_wx(grc_wxgui.top_block_gui):
         self.wxgui_fftsink2_0.set_sample_rate(self.samp_rate)
         self.osmosdr_source_0.set_sample_rate(self.samp_rate)
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 100e3, 10e3, firdes.WIN_HAMMING, 6.76))
+        self.blocks_throttle_0.set_sample_rate(self.samp_rate/1)
 
     def get_rx_gain(self):
         return self.rx_gain

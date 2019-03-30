@@ -62,6 +62,7 @@ y_FM_demodulated=(rd.*conv(id,b,'same')-id.*conv(rd,b,'same'))./(rd.^2+id.^2);
 end
 ```
 ![FM receiver](img/img2-fm_rx.png)
+![Improved FM receiver](img/img10-fmnb_rx_osmocomrtlsdr.png)
 
 ## Future Modules
 ### Binary Phase Shift Keying (BPSK)/ 2-PSK/ 2 Quadrature Amplitude Modulation (2-QAM) 
