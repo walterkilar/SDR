@@ -64,6 +64,50 @@ end
 ![FM receiver](img/img2-fm_rx.png)
 ![Improved FM receiver](img/img10-fmnb_rx_osmocomrtlsdr.png)
 
-## Future Modules
-### Binary Phase Shift Keying (BPSK)/ 2-PSK/ 2 Quadrature Amplitude Modulation (2-QAM) 
-### Digital Video Broadcasting - Satellite - Second Generation (DVB-S2) 
+## Orthogonal Frequency Division Multiplexing (OFDM)
+Orthogonal frequency division modulation (OFDM) divides a high-rate transmit data stream into N lower-rate streams, each of which has a symbol duration larger than the channel delay spread. This serves to mitigate intersymbol interference (ISI). The individual substreams are sent over N parallel subchannels which are orthogonal to each other. Through the use of an inverse fast Fourier transform (IFFT), OFDM can be transmitted using a single radio. Specifically, the OFDM Modulator System object modulates an input signal using orthogonal frequency division modulation. 
+```
+% generate header and trailer (an exact copy of the header)
+f = 0.25; 
+header = sin(0:f*2*pi:f*2*pi*(head_len-1)); 
+f=f/(pi*2/3); 
+header = header+sin(0:f*2*pi:f*2*pi*(head_len-1)); 
+% arrange data into frames and transmitframe_guard = zeros(1, symb_period); 
+time_wave_tx = []; 
+symb_per_carrier = ceil(length(baseband_tx)/carrier_count); 
+fig = 1; 
+if (symb_per_carrier > symb_per_frame)  % === multiple frames === %    
+	power = 0; 
+	while 
+		~isempty(baseband_tx) 
+		% number of symbols per frame        
+		frame_len = min(symb_per_frame*carrier_count,length(baseband_tx));         
+		frame_data = baseband_tx(1:frame_len); 
+		% update the yet-to-modulate data        
+		baseband_tx = baseband_tx((frame_len+1):(length(baseband_tx))); 
+		% OFDM modulation        
+		time_signal_tx = ofdm_modulate(frame_data,ifft_size,carriers,conj_carriers, carrier_count, symb_size, guard_time, fig);         
+		fig = 0; 
+		%indicate that ofdm_modulate() has already generated plots% add a frame guard to each frame of modulated signal        
+		time_wave_tx = [time_wave_tx frame_guard time_signal_tx];         
+		frame_power = var(time_signal_tx); 
+		end
+		% scale the header to match signal level    
+		power = power + frame_power; 
+		% The OFDM modulated signal for transmission    
+		time_wave_tx = [power*header time_wave_tx frame_guard power*header]; 
+else
+		% === single frame === %
+		% OFDM modulation    
+		time_signal_tx = ofdm_modulate(baseband_tx,ifft_size,carriers,...        conj_carriers, carrier_count, symb_size, guard_time, fig); 
+		% calculate the signal power to scale the header    
+		power = var(time_signal_tx); 
+		% The OFDM modulated signal for transmission    
+		time_wave_tx = [power*header frame_guard time_signal_tx frame_guard power*header]; 
+end
+```
+![OFDM transmitter](img/img11-ofdm.png)
+
+## Packet Header Parser
+![Packet Header Parser](img/img12-parsepacket.png)
+

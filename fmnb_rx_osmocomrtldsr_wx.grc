@@ -117,7 +117,7 @@
     </param>
     <param>
       <key>grid_pos</key>
-      <value>7,0,1,6</value>
+      <value>4,0,1,6</value>
     </param>
     <param>
       <key>id</key>
@@ -176,18 +176,10 @@
     </param>
   </block>
   <block>
-    <key>variable_slider</key>
+    <key>variable</key>
     <param>
       <key>comment</key>
       <value></value>
-    </param>
-    <param>
-      <key>converver</key>
-      <value>float_converter</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>50</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -195,43 +187,19 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(984, 76)</value>
+      <value>(768, 244)</value>
     </param>
     <param>
       <key>_rotation</key>
       <value>0</value>
     </param>
     <param>
-      <key>grid_pos</key>
-      <value>4,0,1,6</value>
-    </param>
-    <param>
       <key>id</key>
       <value>bb_gain</value>
     </param>
     <param>
-      <key>label</key>
-      <value>bbGain</value>
-    </param>
-    <param>
-      <key>max</key>
+      <key>value</key>
       <value>50</value>
-    </param>
-    <param>
-      <key>min</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>notebook</key>
-      <value>nbook,0</value>
-    </param>
-    <param>
-      <key>num_steps</key>
-      <value>50</value>
-    </param>
-    <param>
-      <key>style</key>
-      <value>wx.SL_HORIZONTAL</value>
     </param>
   </block>
   <block>
